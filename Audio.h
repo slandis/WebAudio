@@ -26,6 +26,7 @@ public slots:
   QString media();
   QMediaPlayer::MediaStatus mediaStatus();
   QString metaData();
+  int notifyInterval();
   qreal playbackRate();
   QStringList playlist();
   qint64 position();
@@ -52,6 +53,7 @@ public slots:
   void play();
   void setMedia(const QStringList &list);
   void setMuted(bool muted);
+  void setNotifyInterval(int milliseconds);
   void setPlaybackRate(qreal rate);
   void setPlaylist(const QStringList &list);
   void setPosition(qint64 position);
@@ -80,6 +82,7 @@ private slots:
   void metaDataChanged();
   void metaDataAvailableChanged(bool available);
   void mutedChanged(bool muted);
+  void notifyIntervalChanged(int milliseconds);
   void playbackRateChanged(qreal rate);
   void positionChanged(qint64 position);
   void seekableChanged(bool seekable);
@@ -106,6 +109,7 @@ signals:
   void onMetaDataChanged();
   void onMetaDataAvailableChanged(bool available);
   void onMutedChanged(bool muted);
+  void onNotifyIntervalChanged(int milliseconds);
   void onPlaybackRateChanged(qreal rate);
   void onPositionChanged(qint64 position);
   void onSeekableChanged(bool seekable);

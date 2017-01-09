@@ -26,6 +26,7 @@ Audio::Audio(QWidget *parent) : QWidget(parent) {
   connect(_player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)), SLOT(mediaStatusChanged(QMediaPlayer::MediaStatus)));
   connect(_player, SIGNAL(metaDataAvailableChanged(bool)), SLOT(metaDataAvailableChanged(bool)));
   connect(_player, SIGNAL(mutedChanged(bool)), SLOT(mutedChanged(bool)));
+  connect(_player, SIGNAL(notifyIntervalChanged(int)), SLOT(notifyIntervalChanged(int)));
   connect(_player, SIGNAL(playbackRateChanged(qreal)), SLOT(playbackRateChanged(qreal)));
   connect(_player, SIGNAL(positionChanged(qint64)), SLOT(positionChanged(qint64)));
   connect(_player, SIGNAL(seekableChanged(bool)), SLOT(seekableChanged(bool)));
@@ -157,6 +158,10 @@ QString Audio::metaData() {
 
   QJsonDocument doc(data);
   return QString(doc.toJson(QJsonDocument::Compact));
+}
+
+int Audio::notifyInterval() {
+  return _player->notifyInterval();
 }
 
 qreal Audio::playbackRate() {
@@ -302,6 +307,10 @@ void Audio::setMuted(bool muted) {
 
   snd_mixer_close(handle);
   emit onMutedChanged(muted);
+}
+
+void Audio::setNotifyInterval(int milliseconds) {
+  _player->setNotifyInterval(milliseconds);
 }
 
 void Audio::setPlaybackRate(qreal rate) {
@@ -499,6 +508,10 @@ void Audio::metaDataAvailableChanged(bool available) {
 
 void Audio::mutedChanged(bool muted) {
   emit onMutedChanged(muted);
+}
+
+void Audio::notifyIntervalChanged(int milliseconds) {
+  emit onNotifyIntervalChanged(milliseconds);
 }
 
 void Audio::playbackRateChanged(qreal rate) {
