@@ -7,10 +7,9 @@ There are far too many dependencies to list but here are the major ones:
 
 - QT5.x (framebuffer support)
 - gstreamer1.0 (and associated plugins)
- 
+
 ##Documentation
-Coming soon
+See DOCUMENTATION.md: Written for accessing object from JavaScript.
 
 ##Credits
 Ian Firns ([GitHub Project](https://github.com/firnsy/qt5-webkit-container)) whose WebKit container project served as the starting point for my project.
-
