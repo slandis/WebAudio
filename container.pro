@@ -11,6 +11,7 @@ QT	 += multimediawidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
+LIBS += -lasound
 TARGET = container
 TEMPLATE = app
 

@@ -8,6 +8,8 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 
+#include <alsa/asoundlib.h>
+
 WebAudio::WebAudio(QWidget *parent) : QWidget(parent) {
   _player = new QMediaPlayer(this);
   _playlist = new QMediaPlaylist();
@@ -24,7 +26,6 @@ WebAudio::WebAudio(QWidget *parent) : QWidget(parent) {
   connect(_player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)), SLOT(mediaStatusChanged(QMediaPlayer::MediaStatus)));
   connect(_player, SIGNAL(metaDataAvailableChanged(bool)), SLOT(metaDataAvailableChanged(bool)));
   connect(_player, SIGNAL(mutedChanged(bool)), SLOT(mutedChanged(bool)));
-  connect(_player, SIGNAL(notifyIntervalChanged(int)), SLOT(notifyIntervalChanged(int)));
   connect(_player, SIGNAL(playbackRateChanged(qreal)), SLOT(playbackRateChanged(qreal)));
   connect(_player, SIGNAL(positionChanged(qint64)), SLOT(positionChanged(qint64)));
   connect(_player, SIGNAL(seekableChanged(bool)), SLOT(seekableChanged(bool)));
@@ -74,7 +75,51 @@ bool WebAudio::isMetaDataAvailable() {
 }
 
 bool WebAudio::isMuted() {
-  return _player->isMuted();
+  snd_mixer_t *handle;
+  snd_mixer_elem_t *elem;
+  snd_mixer_selem_id_t *sid;
+
+  static const char* mix_name = "PCM";
+  static const char* card = "default";
+  static int mix_index = 0;
+
+  snd_mixer_selem_id_alloca(&sid);
+  snd_mixer_selem_id_set_index(sid, mix_index);
+  snd_mixer_selem_id_set_name(sid, mix_name);
+
+  if (snd_mixer_open(&handle, 0) < 0)
+    return false;
+
+  if (snd_mixer_attach(handle, card) < 0) {
+    snd_mixer_close(handle);
+    return false;
+  }
+
+  if (snd_mixer_selem_register(handle, NULL, NULL) < 0) {
+    snd_mixer_close(handle);
+    return false;
+  }
+
+  if (snd_mixer_load(handle)) {
+    snd_mixer_close(handle);
+    return false;
+  }
+
+  elem = snd_mixer_find_selem(handle, sid);
+
+  if (!elem) {
+    snd_mixer_close(handle);
+    return false;
+  }
+
+  int mute = -1;
+
+  if (snd_mixer_selem_has_playback_switch(elem)) {
+    snd_mixer_selem_get_playback_switch(elem, (snd_mixer_selem_channel_id_t)0, &mute);
+  }
+
+  snd_mixer_close(handle);
+  return (mute > 0) ? true : false;
 }
 
 bool WebAudio::isSeekable() {
@@ -114,10 +159,6 @@ QString WebAudio::metaData() {
   return QString(doc.toJson(QJsonDocument::Compact));
 }
 
-int WebAudio::notifyInterval() {
-  return _player->notifyInterval();
-}
-
 qreal WebAudio::playbackRate() {
   return _player->playbackRate();
 }
@@ -141,7 +182,59 @@ QMediaPlayer::State WebAudio::state() {
 }
 
 int WebAudio::volume() {
-  return _player->volume();
+  snd_mixer_t *handle;
+  snd_mixer_elem_t *elem;
+  snd_mixer_selem_id_t *sid;
+
+  static const char* mix_name = "PCM";
+  static const char* card = "default";
+  static int mix_index = 0;
+
+  snd_mixer_selem_id_alloca(&sid);
+  snd_mixer_selem_id_set_index(sid, mix_index);
+  snd_mixer_selem_id_set_name(sid, mix_name);
+
+  if (snd_mixer_open(&handle, 0) < 0)
+    return -1;
+
+  if (snd_mixer_attach(handle, card) < 0) {
+    snd_mixer_close(handle);
+    return -1;
+  }
+
+  if (snd_mixer_selem_register(handle, NULL, NULL) < 0) {
+    snd_mixer_close(handle);
+    return -1;
+  }
+
+  if (snd_mixer_load(handle)) {
+    snd_mixer_close(handle);
+    return -1;
+  }
+
+  elem = snd_mixer_find_selem(handle, sid);
+
+  if (!elem) {
+    snd_mixer_close(handle);
+    return -1;
+  }
+
+  long minv, maxv, volume;
+
+  snd_mixer_selem_get_playback_volume_range (elem, &minv, &maxv);
+
+  if (snd_mixer_selem_get_playback_volume(elem, (snd_mixer_selem_channel_id_t)0, &volume) < 0) {
+    snd_mixer_close(handle);
+    return -1;
+  }
+
+  volume -= minv;
+  maxv -= minv;
+  minv = 0;
+  volume = 100 * volume / maxv;
+
+  snd_mixer_close(handle);
+  return volume;
 }
 
 /* QMediaPlayer Slots */
@@ -166,11 +259,49 @@ void WebAudio::setMedia(const QStringList &list) {
 }
 
 void WebAudio::setMuted(bool muted) {
-  _player->setMuted(muted);
-}
+  snd_mixer_t *handle;
+  snd_mixer_elem_t *elem;
+  snd_mixer_selem_id_t *sid;
 
-void WebAudio::setNotifyInterval(int millis) {
-  _player->setNotifyInterval(millis);
+  static const char* mix_name = "PCM";
+  static const char* card = "default";
+  static int mix_index = 0;
+
+  snd_mixer_selem_id_alloca(&sid);
+  snd_mixer_selem_id_set_index(sid, mix_index);
+  snd_mixer_selem_id_set_name(sid, mix_name);
+
+  if (snd_mixer_open(&handle, 0) < 0)
+    return;
+
+  if (snd_mixer_attach(handle, card) < 0) {
+    snd_mixer_close(handle);
+    return;
+  }
+
+  if (snd_mixer_selem_register(handle, NULL, NULL) < 0) {
+    snd_mixer_close(handle);
+    return;
+  }
+
+  if (snd_mixer_load(handle)) {
+    snd_mixer_close(handle);
+    return;
+  }
+
+  elem = snd_mixer_find_selem(handle, sid);
+
+  if (!elem) {
+    snd_mixer_close(handle);
+    return;
+  }
+
+  if (snd_mixer_selem_has_playback_switch(elem)) {
+    snd_mixer_selem_set_playback_switch(elem, (snd_mixer_selem_channel_id_t)0, (muted) ? 0 : 1);
+  }
+
+  snd_mixer_close(handle);
+  emit onMutedChanged(muted);
 }
 
 void WebAudio::setPlaybackRate(qreal rate) {
@@ -185,8 +316,61 @@ void WebAudio::setPosition(qint64 position) {
   _player->setPosition(position);
 }
 
-void WebAudio::setVolume(int volume) {
-  _player->setVolume(volume);
+bool WebAudio::setVolume(int volume) {
+  snd_mixer_t *handle;
+  snd_mixer_elem_t *elem;
+  snd_mixer_selem_id_t *sid;
+
+  static const char* mix_name = "PCM";
+  static const char* card = "default";
+  static int mix_index = 0;
+
+  snd_mixer_selem_id_alloca(&sid);
+  snd_mixer_selem_id_set_index(sid, mix_index);
+  snd_mixer_selem_id_set_name(sid, mix_name);
+
+  if (snd_mixer_open(&handle, 0) < 0)
+    return false;
+
+  if (snd_mixer_attach(handle, card) < 0) {
+    snd_mixer_close(handle);
+    return false;
+  }
+
+  if (snd_mixer_selem_register(handle, NULL, NULL) < 0) {
+    snd_mixer_close(handle);
+    return false;
+  }
+
+  if (snd_mixer_load(handle) < 0) {
+    snd_mixer_close(handle);
+    return false;
+  }
+
+  elem = snd_mixer_find_selem(handle, sid);
+
+  if (!elem) {
+    snd_mixer_close(handle);
+    return false;
+  }
+
+  long minv, maxv, set;
+
+  snd_mixer_selem_get_playback_volume_range(elem, &minv, &maxv);
+
+  if (volume < 0 || volume > 100)
+    return false;
+
+  set = (volume * (maxv - minv) / 100) + minv;
+
+  if (snd_mixer_selem_set_playback_volume_all(elem, set) < 0) {
+    snd_mixer_close(handle);
+    return false;
+  }
+
+  snd_mixer_close(handle);
+  emit onVolumeChanged(volume);
+  return true;
 }
 
 void WebAudio::stop() {
@@ -315,10 +499,6 @@ void WebAudio::metaDataAvailableChanged(bool available) {
 
 void WebAudio::mutedChanged(bool muted) {
   emit onMutedChanged(muted);
-}
-
-void WebAudio::notifyIntervalChanged(int milliseconds) {
-  emit onNotifyIntervalChanged(milliseconds);
 }
 
 void WebAudio::playbackRateChanged(qreal rate) {
