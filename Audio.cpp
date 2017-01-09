@@ -1,4 +1,4 @@
-#include "WebAudio.h"
+#include "Audio.h"
 
 #include <QtWebKitWidgets>
 #include <QMediaService>
@@ -10,7 +10,7 @@
 
 #include <alsa/asoundlib.h>
 
-WebAudio::WebAudio(QWidget *parent) : QWidget(parent) {
+Audio::Audio(QWidget *parent) : QWidget(parent) {
   _player = new QMediaPlayer(this);
   _playlist = new QMediaPlaylist();
   _player->setPlaylist(_playlist);
@@ -41,40 +41,40 @@ WebAudio::WebAudio(QWidget *parent) : QWidget(parent) {
   connect(_playlist, SIGNAL(playbackModeChanged(QMediaPlaylist::PlaybackMode)), SLOT(playbackModeChanged(QMediaPlaylist::PlaybackMode)));
 }
 
-WebAudio::~WebAudio() {
+Audio::~Audio() {
   ;
 }
 
 /* QMediaPlayer functions */
-int WebAudio::bufferStatus() {
+int Audio::bufferStatus() {
   return _player->bufferStatus();
 }
 
-QString WebAudio::currentMedia() {
+QString Audio::currentMedia() {
   return _player->currentMedia().canonicalUrl().toString();
 }
 
-qint64 WebAudio::duration() {
+qint64 Audio::duration() {
   return _player->duration();
 }
 
-QMediaPlayer::Error WebAudio::error() {
+QMediaPlayer::Error Audio::error() {
   return _player->error();
 }
 
-QString WebAudio::errorString() {
+QString Audio::errorString() {
   return _player->errorString();
 }
 
-bool WebAudio::isAudioAvailable() {
+bool Audio::isAudioAvailable() {
   return _player->isAudioAvailable();
 }
 
-bool WebAudio::isMetaDataAvailable() {
+bool Audio::isMetaDataAvailable() {
   return _player->isMetaDataAvailable();
 }
 
-bool WebAudio::isMuted() {
+bool Audio::isMuted() {
   snd_mixer_t *handle;
   snd_mixer_elem_t *elem;
   snd_mixer_selem_id_t *sid;
@@ -122,19 +122,19 @@ bool WebAudio::isMuted() {
   return (mute > 0) ? true : false;
 }
 
-bool WebAudio::isSeekable() {
+bool Audio::isSeekable() {
   return _player->isSeekable();
 }
 
-QString WebAudio::media() {
+QString Audio::media() {
   return _player->media().canonicalUrl().toString();
 }
 
-QMediaPlayer::MediaStatus WebAudio::mediaStatus() {
+QMediaPlayer::MediaStatus Audio::mediaStatus() {
   return _player->mediaStatus();
 }
 
-QString WebAudio::metaData() {
+QString Audio::metaData() {
   QJsonObject data;
 
   if (_player->isMetaDataAvailable()) {
@@ -159,11 +159,11 @@ QString WebAudio::metaData() {
   return QString(doc.toJson(QJsonDocument::Compact));
 }
 
-qreal WebAudio::playbackRate() {
+qreal Audio::playbackRate() {
   return _player->playbackRate();
 }
 
-QStringList WebAudio::playlist() {
+QStringList Audio::playlist() {
   QStringList list;
 
   for (int i = 0; i < _playlist->mediaCount(); i++) {
@@ -173,15 +173,15 @@ QStringList WebAudio::playlist() {
   return list;
 }
 
-qint64 WebAudio::position() {
+qint64 Audio::position() {
   return _player->position();
 }
 
-QMediaPlayer::State WebAudio::state() {
+QMediaPlayer::State Audio::state() {
   return _player->state();
 }
 
-int WebAudio::volume() {
+int Audio::volume() {
   snd_mixer_t *handle;
   snd_mixer_elem_t *elem;
   snd_mixer_selem_id_t *sid;
@@ -238,15 +238,15 @@ int WebAudio::volume() {
 }
 
 /* QMediaPlayer Slots */
-void WebAudio::pause() {
+void Audio::pause() {
   _player->pause();
 }
 
-void WebAudio::play() {
+void Audio::play() {
   _player->play();
 }
 
-void WebAudio::setMedia(const QStringList &list) {
+void Audio::setMedia(const QStringList &list) {
   _playlist->clear();
 
   foreach (const QString &item, list) {
@@ -258,7 +258,7 @@ void WebAudio::setMedia(const QStringList &list) {
   }
 }
 
-void WebAudio::setMuted(bool muted) {
+void Audio::setMuted(bool muted) {
   snd_mixer_t *handle;
   snd_mixer_elem_t *elem;
   snd_mixer_selem_id_t *sid;
@@ -304,19 +304,19 @@ void WebAudio::setMuted(bool muted) {
   emit onMutedChanged(muted);
 }
 
-void WebAudio::setPlaybackRate(qreal rate) {
+void Audio::setPlaybackRate(qreal rate) {
   _player->setPlaybackRate(rate);
 }
 
-void WebAudio::setPlaylist(const QStringList &list) {
+void Audio::setPlaylist(const QStringList &list) {
   setMedia(list);
 }
 
-void WebAudio::setPosition(qint64 position) {
+void Audio::setPosition(qint64 position) {
   _player->setPosition(position);
 }
 
-bool WebAudio::setVolume(int volume) {
+bool Audio::setVolume(int volume) {
   snd_mixer_t *handle;
   snd_mixer_elem_t *elem;
   snd_mixer_selem_id_t *sid;
@@ -373,12 +373,12 @@ bool WebAudio::setVolume(int volume) {
   return true;
 }
 
-void WebAudio::stop() {
+void Audio::stop() {
   _player->stop();
 }
 
 /* QMediaPlaylist Functions */
-bool WebAudio::addMedia(const QString &media) {
+bool Audio::addMedia(const QString &media) {
   QFileInfo file(media);
 
   if (file.exists()) {
@@ -389,15 +389,15 @@ bool WebAudio::addMedia(const QString &media) {
   return false;
 }
 
-void WebAudio::clear() {
+void Audio::clear() {
   _playlist->clear();
 }
 
-int WebAudio::currentIndex() {
+int Audio::currentIndex() {
   return _playlist->currentIndex();
 }
 
-bool WebAudio::insertMedia(int index, const QString &media) {
+bool Audio::insertMedia(int index, const QString &media) {
   QFileInfo file(media);
 
   if (file.exists()) {
@@ -407,113 +407,113 @@ bool WebAudio::insertMedia(int index, const QString &media) {
   return false;
 }
 
-bool WebAudio::isEmpty() {
+bool Audio::isEmpty() {
   return _playlist->isEmpty();
 }
 
-bool WebAudio::isReadOnly() {
+bool Audio::isReadOnly() {
   return _playlist->isReadOnly();
 }
 
-QString WebAudio::media(int index) {
+QString Audio::media(int index) {
   return _playlist->media(index).canonicalUrl().toString();
 }
 
-int WebAudio::mediaCount() {
+int Audio::mediaCount() {
   return _playlist->mediaCount();
 }
 
-int WebAudio::nextIndex(int steps = 1) {
+int Audio::nextIndex(int steps = 1) {
   return _playlist->nextIndex(steps);
 }
 
-QMediaPlaylist::PlaybackMode WebAudio::playbackMode() {
+QMediaPlaylist::PlaybackMode Audio::playbackMode() {
   return _playlist->playbackMode();
 }
 
-int WebAudio::previousIndex(int steps = 1) {
+int Audio::previousIndex(int steps = 1) {
   return _playlist->previousIndex(steps);
 }
 
-bool WebAudio::removeMedia(int index) {
+bool Audio::removeMedia(int index) {
   return _playlist->removeMedia(index);
 }
 
-void WebAudio::setPlaybackMode(QMediaPlaylist::PlaybackMode mode) {
+void Audio::setPlaybackMode(QMediaPlaylist::PlaybackMode mode) {
   _playlist->setPlaybackMode(mode);
 }
 
 /* QMediaPlaylist Slots */
-void WebAudio::next() {
+void Audio::next() {
   _playlist->next();
 }
 
-void WebAudio::previous() {
+void Audio::previous() {
   _playlist->previous();
 }
 
-void WebAudio::setCurrentIndex(int index) {
+void Audio::setCurrentIndex(int index) {
   _playlist->setCurrentIndex(index);
 }
 
-void WebAudio::shuffle() {
+void Audio::shuffle() {
   _playlist->shuffle();
 }
 
 /* Player Events */
-void WebAudio::audioAvailableChanged(bool available) {
+void Audio::audioAvailableChanged(bool available) {
   emit onAudioAvailableChanged(available);
 }
 
-void WebAudio::bufferStatusChanged(int percent) {
+void Audio::bufferStatusChanged(int percent) {
   emit onBufferStatusChanged(percent);
 }
 
-void WebAudio::currentMediaChanged(const QMediaContent &media) {
+void Audio::currentMediaChanged(const QMediaContent &media) {
   emit onCurrentMediaChanged(QString(media.canonicalUrl().toString()));
 }
 
-void WebAudio::durationChanged(qint64 duration) {
+void Audio::durationChanged(qint64 duration) {
   emit onDurationChanged(duration);
 }
 
-void WebAudio::error(QMediaPlayer::Error error) {
+void Audio::error(QMediaPlayer::Error error) {
   emit onError(QString("%1: %2").arg(error).arg(_player->errorString()));
 }
 
-void WebAudio::mediaChanged(const QMediaContent &media) {
+void Audio::mediaChanged(const QMediaContent &media) {
   emit onMediaChanged(QString(media.canonicalUrl().toString()));
 }
 
-void WebAudio::mediaStatusChanged(QMediaPlayer::MediaStatus status) {
+void Audio::mediaStatusChanged(QMediaPlayer::MediaStatus status) {
   emit onMediaStatusChanged(status);
 }
 
-void WebAudio::metaDataChanged() {
+void Audio::metaDataChanged() {
   emit onMetaDataChanged();
 }
 
-void WebAudio::metaDataAvailableChanged(bool available) {
+void Audio::metaDataAvailableChanged(bool available) {
   emit onMetaDataAvailableChanged(available);
 }
 
-void WebAudio::mutedChanged(bool muted) {
+void Audio::mutedChanged(bool muted) {
   emit onMutedChanged(muted);
 }
 
-void WebAudio::playbackRateChanged(qreal rate) {
+void Audio::playbackRateChanged(qreal rate) {
   emit onPlaybackRateChanged(rate);
 }
 
-void WebAudio::positionChanged(qint64 position) {
+void Audio::positionChanged(qint64 position) {
   emit onPositionChanged(position);
 }
 
-void WebAudio::seekableChanged(bool seekable) {
+void Audio::seekableChanged(bool seekable) {
   emit onSeekableChanged(seekable);
 }
 
-void WebAudio::stateChanged(QMediaPlayer::State state) {
+void Audio::stateChanged(QMediaPlayer::State state) {
   switch (state) {
     case QMediaPlayer::StoppedState :
       emit onStopped();
@@ -529,31 +529,31 @@ void WebAudio::stateChanged(QMediaPlayer::State state) {
   }
 }
 
-void WebAudio::volumeChanged(int volume) {
+void Audio::volumeChanged(int volume) {
   emit onVolumeChanged(volume);
 }
 
 /* QMediaPlaylist Slots */
-void WebAudio::currentIndexChanged(int index) {
+void Audio::currentIndexChanged(int index) {
   emit onCurrentIndexChanged(index);
 }
 
-void WebAudio::mediaAboutToBeInserted(int start, int end) {
+void Audio::mediaAboutToBeInserted(int start, int end) {
   emit onMediaAboutToBeInserted(start, end);
 }
 
-void WebAudio::mediaAboutToBeRemoved(int start, int end) {
+void Audio::mediaAboutToBeRemoved(int start, int end) {
   emit onMediaAboutToBeRemoved(start, end);
 }
 
-void WebAudio::mediaInserted(int start, int end) {
+void Audio::mediaInserted(int start, int end) {
   emit onMediaInserted(start, end);
 }
 
-void WebAudio::mediaRemoved(int start, int end) {
+void Audio::mediaRemoved(int start, int end) {
   emit onMediaRemoved(start, end);
 }
 
-void WebAudio::playbackModeChanged(QMediaPlaylist::PlaybackMode mode) {
+void Audio::playbackModeChanged(QMediaPlaylist::PlaybackMode mode) {
   emit onPlaybackModeChanged(mode);
 }

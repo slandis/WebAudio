@@ -1,16 +1,16 @@
-#include "container.h"
-#include "WebAudio.h"
+#include "Container.h"
+#include "Audio.h"
 
 #include <QScroller>
 
 Container::Container(QWidget *parent) : QWebView(parent) {
-  webAudio = new WebAudio(this);
+  audio = new Audio(this);
   connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
   connect(this->page()->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(populateJavaScriptWindowObject()));
 
   QScroller::grabGesture(this, QScroller::LeftMouseButtonGesture);
   QScroller::grabGesture(this, QScroller::TouchGesture);
-  
+
   splash = new QWidget(this);
   splash->setStyleSheet("background-color: #000");
   splash->setFixedSize(this->size());
@@ -31,7 +31,7 @@ void Container::setFixedSize(int width, int height) {
 }
 
 void Container::populateJavaScriptWindowObject() {
-  this->page()->mainFrame()->addToJavaScriptWindowObject(QString("webAudio"), webAudio);
+  this->page()->mainFrame()->addToJavaScriptWindowObject(QString("Audio"), audio);
 }
 
 void Container::setScrollBars() {

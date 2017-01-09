@@ -1,16 +1,16 @@
-#ifndef WEBAUDIO_H
-#define WEBAUDIO_H
+#ifndef AUDIO_H
+#define AUDIO_H
 
 #include <QWidget>
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
 
-class WebAudio : public QWidget {
+class Audio : public QWidget {
   Q_OBJECT
 
 public:
-  WebAudio(QWidget *parent = 0);
-  ~WebAudio();
+  Audio(QWidget *parent = 0);
+  ~Audio();
 
 public slots:
   /* QMediaPlayer Functions */

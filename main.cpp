@@ -2,7 +2,7 @@
 #include <QCommandLineParser>
 #include <QDebug>
 
-#include "container.h"
+#include "Container.h"
 
 #define DEFAULT_NAME     "WebKit+Audio"
 #define DEFAULT_VERSION  "0.1"

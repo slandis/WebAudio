@@ -17,10 +17,8 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp \
-    	container.cpp \
-	WebAudio.cpp
+    	Container.cpp \
+	Audio.cpp
 
-HEADERS  += container.h \
-			WebAudio.h
-
-FORMS    +=
+HEADERS  += Container.h \
+	    Audio.h

@@ -1,7 +1,7 @@
 #ifndef CONTAINER_H
 #define CONTAINER_H
 
-#include "WebAudio.h"
+#include "Audio.h"
 
 #include <QtWebKitWidgets>
 #include <QKeyEvent>
@@ -23,7 +23,7 @@ class Container : public QWebView {
     QUrl    url;
     bool    verbose;
 
-    WebAudio *webAudio;
+    Audio *audio;
 
   private slots:
     void loadFinished(bool finished);
