@@ -3,6 +3,10 @@
 
 *.*~
 
+moc_*.cpp
+
 .fuse_hidden*
+
+Makefile
 
 container
