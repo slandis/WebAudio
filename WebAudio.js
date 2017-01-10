@@ -6,7 +6,7 @@
 var audio = new WebAudio();
 
 function WebAudio() {
-  if (webAudio === undefined) {
+  if (Audio === undefined) {
     return undefined;
   }
 
@@ -15,59 +15,59 @@ function WebAudio() {
 }
 
 WebAudio.prototype.play = function() {
-  webAudio.play();
+  Audio.play();
 };
 
 WebAudio.prototype.pause = function() {
-  webAudio.pause();
+  Audio.pause();
 };
 
 WebAudio.prototype.stop = function() {
-  webAudio.stop();
+  Audio.stop();
 };
 
 WebAudio.prototype.next = function() {
-  webAudio.next();
+  Audio.next();
 };
 
 WebAudio.prototype.previous = function() {
-  webAudio.previous();
+  Audio.previous();
 };
 
 WebAudio.prototype.seekForward = function() {
-  var position = webAudio.position();
+  var position = Audio.position();
   position += 1000;
-  webAudio.setPosition(position);
+  Audio.setPosition(position);
 };
 
 WebAudio.prototype.seekBackward = function() {
-  var position = webAudio.position();
+  var position = Audio.position();
   position -= 1000;
-  webAudio.setPosition(position);
+  Audio.setPosition(position);
 };
 
 WebAudio.prototype.setMute = function(mute) {
-  webAudio.setMuted(mute);
+  Audio.setMuted(mute);
 };
 
 WebAudio.prototype.setPlaylist = function(list) {
-  webAudio.setMedia(list);
+  Audio.setMedia(list);
 };
 
 WebAudio.prototype.clearPlaylist = function() {
-  webAudio.clear();
+  Audio.clear();
 };
 
 WebAudio.prototype.addPlaylistItem = function(file) {
-  return webAudio.addMedia(file);
+  return Audio.addMedia(file);
 };
 
 WebAudio.prototype.insertPlaylistItem = function(file, index) {
   if (typeof(file) === "string") {
-    return webAudio.insertMedia(index, file);
+    return Audio.insertMedia(index, file);
   } else {
     file.forEach(function(item) {
-      if (!webAudio.insertMedia(index++, file)) {
+      if (!Audio.insertMedia(index++, file)) {
         return false;
       }
     });
@@ -79,61 +79,61 @@ WebAudio.prototype.insertPlaylistItem = function(file, index) {
 };
 
 WebAudio.prototype.removePlaylistItem = function(index) {
-  return webAudio.removeMedia(index);
+  return Audio.removeMedia(index);
 };
 
 WebAudio.prototype.addEventListener = function(evt, callback) {
   switch (evt) {
     case 'playing':
-      webAudio.onPlay.connect(callback);
+      Audio.onPlay.connect(callback);
       break;
 
     case 'stopped':
-      webAudio.onStop.connect(callback);
+      Audio.onStop.connect(callback);
       break;
 
     case 'paused':
-      webAudio.onPause.connect(callback);
+      Audio.onPause.connect(callback);
       break;
 
     case 'position':
-      webAudio.onPositionChanged.connect(callback);
+      Audio.onPositionChanged.connect(callback);
       break;
 
     case 'volume':
-      webAudio.onVolumeChanged.connect(callback);
+      Audio.onVolumeChanged.connect(callback);
       break;
 
     case 'error':
-      webAudio.onError.connect(callback);
+      Audio.onError.connect(callback);
       break;
 
     case 'mode':
-      webAudio.onPlaybackModeChanged.connect(callback);
+      Audio.onPlaybackModeChanged.connect(callback);
       break;
 
     case 'mediachanged':
-      webAudio.onMediaChanged.connect(callback);
+      Audio.onMediaChanged.connect(callback);
       break;
 
     case 'mediaremoved':
-      webAudio.onMediaRemoved.connect(callback);
+      Audio.onMediaRemoved.connect(callback);
       break;
 
     case 'mediainserted':
-      webAudio.onMediaInserted.connect(callback);
+      Audio.onMediaInserted.connect(callback);
       break;
 
     case 'metadata':
-      webAudio.onMetaDataAvailableChanged.connect(callback);
+      Audio.onMetaDataAvailableChanged.connect(callback);
       break;
 
     case 'muted':
-      webAudio.onMutedChanged.connect(callback);
+      Audio.onMutedChanged.connect(callback);
       break;
 
     case 'status':
-      webAudio.onMediaStatusChanged.connect(callback);
+      Audio.onMediaStatusChanged.connect(callback);
       break;
   }
 };
