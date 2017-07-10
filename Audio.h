@@ -37,7 +37,7 @@ public slots:
   bool addMedia(const QString &media, bool localFile);
   void clear();
   int currentIndex();
-  bool insertMedia(int index, const QString &media);
+  bool insertMedia(int index, const QString &media, bool localFile);
   bool isEmpty();
   bool isReadOnly();
   QString media(int index);

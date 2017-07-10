@@ -391,11 +391,9 @@ bool Audio::addMedia(const QString &media, bool localFile) {
   QFileInfo file(media);
 
   if (file.exists() && localFile) {
-    _playlist->addMedia(QUrl::fromLocalFile(file.absoluteFilePath()));
-    return true;
+    return _playlist->addMedia(QUrl::fromLocalFile(file.absoluteFilePath()));
   } else {
-    _playlist->addMedia(QUrl(media));
-    return true;
+    return _playlist->addMedia(QUrl(media));
   }
 
   return false;
@@ -409,11 +407,13 @@ int Audio::currentIndex() {
   return _playlist->currentIndex();
 }
 
-bool Audio::insertMedia(int index, const QString &media) {
+bool Audio::insertMedia(int index, const QString &media, bool localFile) {
   QFileInfo file(media);
 
-  if (file.exists()) {
+  if (file.exists() && localFile) {
     return _playlist->insertMedia(index, QUrl::fromLocalFile(file.absoluteFilePath()));
+  } else {
+    return _playlist->insertMedia(index, QUrl(media));
   }
 
   return false;
