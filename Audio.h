@@ -34,7 +34,7 @@ public slots:
   int volume();
 
   /* QMediaPlaylist Functions */
-  bool addMedia(const QString &media);
+  bool addMedia(const QString &media, bool localFile);
   void clear();
   int currentIndex();
   bool insertMedia(int index, const QString &media);
