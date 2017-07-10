@@ -387,11 +387,14 @@ void Audio::stop() {
 }
 
 /* QMediaPlaylist Functions */
-bool Audio::addMedia(const QString &media) {
+bool Audio::addMedia(const QString &media, bool localFile) {
   QFileInfo file(media);
 
-  if (file.exists()) {
+  if (file.exists() && localFile) {
     _playlist->addMedia(QUrl::fromLocalFile(file.absoluteFilePath()));
+    return true;
+  } else {
+    _playlist->addMedia(QUrl(media));
     return true;
   }
 
