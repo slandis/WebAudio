@@ -13,6 +13,13 @@ public:
   ~Audio();
 
 public slots:
+  /* QMediaObject Functions */
+  QStringList availableMetaData();
+  bool isMetaDataAvailable();
+  QString metaData(const QString &key);
+  int notifyInterval();
+  void setNotifyInterval(int milliseconds);
+
   /* QMediaPlayer Functions */
   int bufferStatus();
   QString currentMedia();
@@ -20,13 +27,10 @@ public slots:
   QMediaPlayer::Error error();
   QString errorString();
   bool isAudioAvailable();
-  bool isMetaDataAvailable();
   bool isMuted();
   bool isSeekable();
   QString media();
   QMediaPlayer::MediaStatus mediaStatus();
-  QString metaData();
-  int notifyInterval();
   qreal playbackRate();
   QStringList playlist();
   qint64 position();
@@ -53,7 +57,6 @@ public slots:
   void play();
   void setMedia(const QStringList &list);
   void setMuted(bool muted);
-  void setNotifyInterval(int milliseconds);
   void setPlaybackRate(qreal rate);
   void setPlaylist(const QStringList &list);
   void setPosition(qint64 position);
@@ -69,8 +72,14 @@ public slots:
 private:
   QMediaPlayer *_player;
   QMediaPlaylist *_playlist;
+  bool _muted;
 
 private slots:
+  /* QMediaObject Events */
+  void metaDataChanged();
+  void metaDataAvailableChanged(bool available);
+  void notifyIntervalChanged(int milliseconds);
+
   /* QMediaPlayer Events */
   void audioAvailableChanged(bool available);
   void bufferStatusChanged(int percent);
@@ -79,10 +88,7 @@ private slots:
   void error(QMediaPlayer::Error error);
   void mediaChanged(const QMediaContent &media);
   void mediaStatusChanged(QMediaPlayer::MediaStatus status);
-  void metaDataChanged();
-  void metaDataAvailableChanged(bool available);
   void mutedChanged(bool muted);
-  void notifyIntervalChanged(int milliseconds);
   void playbackRateChanged(qreal rate);
   void positionChanged(qint64 position);
   void seekableChanged(bool seekable);
@@ -98,6 +104,11 @@ private slots:
   void playbackModeChanged(QMediaPlaylist::PlaybackMode mode);
 
 signals:
+  /* QMediaObject Signals */
+  void onMetaDataChanged();
+  void onMetaDataAvailableChanged(bool available);
+  void onNotifyIntervalChanged(int milliseconds);
+
   /* QMediaPlayer Signals */
   void onAudioAvailableChanged(bool available);
   void onBufferStatusChanged(int percent);
@@ -105,11 +116,8 @@ signals:
   void onDurationChanged(qint64 duration);
   void onError(QString error);
   void onMediaChanged(QString media);
-  void onMediaStatusChanged(QMediaPlayer::MediaStatus status);
-  void onMetaDataChanged();
-  void onMetaDataAvailableChanged(bool available);
+  void onMediaStatusChanged(int status);
   void onMutedChanged(bool muted);
-  void onNotifyIntervalChanged(int milliseconds);
   void onPlaybackRateChanged(qreal rate);
   void onPositionChanged(qint64 position);
   void onSeekableChanged(bool seekable);
@@ -126,7 +134,7 @@ signals:
   void onMediaAboutToBeRemoved(int start, int end);
   void onMediaInserted(int start, int end);
   void onMediaRemoved(int start, int end);
-  void onPlaybackModeChanged(QMediaPlaylist::PlaybackMode mode);
+  void onPlaybackModeChanged(int mode);
 };
 
 #endif

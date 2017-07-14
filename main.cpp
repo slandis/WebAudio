@@ -7,7 +7,7 @@
 #define DEFAULT_NAME     "WebKit+Audio"
 #define DEFAULT_VERSION  "0.1"
 
-#define DEFAULT_URL      "http://localhost:3000"
+#define DEFAULT_URL      "http://localhost:80"
 
 #define DEFAULT_WIDTH    800
 #define DEFAULT_HEIGHT   480
