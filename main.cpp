@@ -13,7 +13,7 @@
 #define DEFAULT_NAME     "WebKit+Audio"
 #define DEFAULT_VERSION  "0.1"
 
-#define DEFAULT_URL      "http://localhost/sins.html"
+#define DEFAULT_URL      "http://localhost"
 
 #define DEFAULT_WIDTH    800
 #define DEFAULT_HEIGHT   480
