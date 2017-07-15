@@ -6,14 +6,6 @@
 
 #include "Audio.h"
 
-#include <QtWebKitWidgets>
-#include <QMediaService>
-#include <QMediaPlaylist>
-#include <QMediaMetaData>
-#include <QFileInfo>
-#include <QJsonObject>
-#include <QJsonDocument>
-
 #include <alsa/asoundlib.h>
 
 Audio::Audio(QWidget *parent) : QWidget(parent) {

@@ -9,6 +9,7 @@
 #include "Audio.h"
 
 #include <QScroller>
+#include <QVBoxLayout>
 
 Container::Container(QWidget *parent) : QWebView(parent) {
   audio = new Audio(this);
@@ -18,6 +19,8 @@ Container::Container(QWidget *parent) : QWebView(parent) {
   QScroller::grabGesture(this, QScroller::LeftMouseButtonGesture);
   QScroller::grabGesture(this, QScroller::TouchGesture);
 
+  QWebSettings::globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
+
   splash = new QWidget(this);
   splash->setStyleSheet("background-color: #000");
   splash->setFixedSize(this->size());
@@ -25,6 +28,14 @@ Container::Container(QWidget *parent) : QWebView(parent) {
   this->setWindowFlags(Qt::FramelessWindowHint);
   this->setAttribute(Qt::WA_AcceptTouchEvents, true);
   this->setScrollBars();
+
+  /* The following is mostly broken. It steals the input and you can't return. Handy for debug though */
+  inspector = new QWebInspector();
+  inspector->hide();
+  inspector->setPage(this->page());
+
+  QShortcut *ins = new QShortcut(QKeySequence(Qt::Key_F7), this);
+  connect(ins, SIGNAL(activated()), this, SLOT(showHideInspector()));
 }
 
 void Container::load(const QUrl &url) {
@@ -38,7 +49,7 @@ void Container::setFixedSize(int width, int height) {
 }
 
 void Container::populateJavaScriptWindowObject() {
-  this->page()->mainFrame()->addToJavaScriptWindowObject(QString("Audio"), audio);
+  this->page()->mainFrame()->addToJavaScriptWindowObject(QString("audio"), audio);
 }
 
 void Container::setScrollBars() {
@@ -56,6 +67,10 @@ void Container::loadFinished(bool finished) {
 
 void Container::retry() {
   QWebView::load(this->url);
+}
+
+void Container::showHideInspector() {
+  inspector->setVisible(inspector->isHidden());
 }
 
 Container::~Container() {

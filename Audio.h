@@ -3,13 +3,17 @@
  * Copyright (C) 2017
  * Shaun Landis <slandis@github>
  */
- 
+
 #ifndef AUDIO_H
 #define AUDIO_H
 
 #include <QWidget>
 #include <QMediaPlayer>
+#include <QtWebKitWidgets>
+#include <QMediaService>
 #include <QMediaPlaylist>
+#include <QMediaMetaData>
+#include <QFileInfo>
 
 class Audio : public QWidget {
   Q_OBJECT

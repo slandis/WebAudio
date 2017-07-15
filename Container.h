@@ -11,6 +11,7 @@
 #include "Audio.h"
 
 #include <QtWebKitWidgets>
+#include <QWebInspector>
 #include <QKeyEvent>
 
 class Container : public QWebView {
@@ -27,6 +28,7 @@ class Container : public QWebView {
 
   private:
     QWidget *splash;
+    QWebInspector *inspector;
     QUrl    url;
     bool    verbose;
 
@@ -36,6 +38,7 @@ class Container : public QWebView {
     void loadFinished(bool finished);
     void retry();
     void populateJavaScriptWindowObject();
+    void showHideInspector();
 
   protected:
 	void keyPressEvent(QKeyEvent *event);
