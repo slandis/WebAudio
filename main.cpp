@@ -1,3 +1,9 @@
+/*
+ * WebAudio - main.cpp
+ * Copyright (C) 2017
+ * Shaun Landis <slandis@github>
+ */
+
 #include <QApplication>
 #include <QCommandLineParser>
 #include <QDebug>
@@ -7,7 +13,7 @@
 #define DEFAULT_NAME     "WebKit+Audio"
 #define DEFAULT_VERSION  "0.1"
 
-#define DEFAULT_URL      "http://localhost:80"
+#define DEFAULT_URL      "http://localhost/sins.html"
 
 #define DEFAULT_WIDTH    800
 #define DEFAULT_HEIGHT   480

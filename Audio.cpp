@@ -1,3 +1,9 @@
+/*
+ * WebAudio - Audio.cpp
+ * Copyright (C) 2017
+ * Shaun Landis <slandis@github>
+ */
+
 #include "Audio.h"
 
 #include <QtWebKitWidgets>
@@ -16,11 +22,8 @@ Audio::Audio(QWidget *parent) : QWidget(parent) {
   _muted = false;
 
   /* Signal connections from QMediaObject */
-  connect(_player, SIGNAL(availabilityChanged(bool)), SLOT(avaalibilityChanged(bool)));
-  connect(_player, SIGNAL(availabilityChanged(QMultimedia::AvailabilityStatus)), SLOT(availabilityChanged(QMultimedia::AvailabilityStatus)));
   connect(_player, SIGNAL(metaDataAvailableChanged(bool)), SLOT(metaDataAvailableChanged(bool)));
   connect(_player, SIGNAL(metaDataChanged()), SLOT(metaDataChanged()));
-  connect(_player, SIGNAL(metaDataChanged(const QString)), SLOT(metaDataChanged(const QString)));
   connect(_player, SIGNAL(notifyIntervalChanged(int)), SLOT(notifyIntervalChanged(int)));
 
   /* Signal connections from QMediaPlayer */
@@ -55,12 +58,6 @@ Audio::~Audio() {
 
 /* QMediaObject functions */
 QStringList Audio::availableMetaData() {
-  /*
-  QJsonArray data = QJsonArray::fromStringList(_player->availableMetaData());
-  QJsonDocument doc(data);
-
-  return QString(doc.toJson(QJsonDocument::Compact));
-  */
   return _player->availableMetaData();
 }
 
@@ -93,8 +90,8 @@ qint64 Audio::duration() {
   return _player->duration();
 }
 
-QMediaPlayer::Error Audio::error() {
-  return _player->error();
+int Audio::error() {
+  return (int)_player->error();
 }
 
 QString Audio::errorString() {
@@ -117,8 +114,8 @@ QString Audio::media() {
   return _player->media().canonicalUrl().toString();
 }
 
-QMediaPlayer::MediaStatus Audio::mediaStatus() {
-  return _player->mediaStatus();
+int Audio::mediaStatus() {
+  return (int)_player->mediaStatus();
 }
 
 qreal Audio::playbackRate() {
@@ -139,8 +136,8 @@ qint64 Audio::position() {
   return _player->position();
 }
 
-QMediaPlayer::State Audio::state() {
-  return _player->state();
+int Audio::state() {
+  return (int)_player->state();
 }
 
 int Audio::volume() {
@@ -252,8 +249,8 @@ int Audio::nextIndex(int steps = 1) {
   return _playlist->nextIndex(steps);
 }
 
-QMediaPlaylist::PlaybackMode Audio::playbackMode() {
-  return _playlist->playbackMode();
+int Audio::playbackMode() {
+  return (int)_playlist->playbackMode();
 }
 
 int Audio::previousIndex(int steps = 1) {

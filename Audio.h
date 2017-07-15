@@ -1,3 +1,9 @@
+/*
+ * WebAudio - Audio.h
+ * Copyright (C) 2017
+ * Shaun Landis <slandis@github>
+ */
+ 
 #ifndef AUDIO_H
 #define AUDIO_H
 
@@ -24,17 +30,17 @@ public slots:
   int bufferStatus();
   QString currentMedia();
   qint64 duration();
-  QMediaPlayer::Error error();
+  int error();
   QString errorString();
   bool isAudioAvailable();
   bool isMuted();
   bool isSeekable();
   QString media();
-  QMediaPlayer::MediaStatus mediaStatus();
+  int mediaStatus();
   qreal playbackRate();
   QStringList playlist();
   qint64 position();
-  QMediaPlayer::State state();
+  int state();
   int volume();
 
   /* QMediaPlaylist Functions */
@@ -47,7 +53,7 @@ public slots:
   QString media(int index);
   int mediaCount();
   int nextIndex(int steps);
-  QMediaPlaylist::PlaybackMode playbackMode();
+  int playbackMode();
   int previousIndex(int steps);
   bool removeMedia(int index);
   void setPlaybackMode(QMediaPlaylist::PlaybackMode mode);

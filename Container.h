@@ -1,3 +1,10 @@
+/*
+ * WebAudio - Container.h
+ * Copyright (C) 2017
+ * Shaun Landis <slandis@github>
+ * Ian Firns <firnsy@github>
+ */
+
 #ifndef CONTAINER_H
 #define CONTAINER_H
 

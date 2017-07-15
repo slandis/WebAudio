@@ -1,3 +1,10 @@
+/*
+ * WebAudio - Container.cpp
+ * Copyright (C) 2017
+ * Shaun Landis <slandis@github>
+ * Ian Firns <firnsy@github>
+ */
+
 #include "Container.h"
 #include "Audio.h"
 
